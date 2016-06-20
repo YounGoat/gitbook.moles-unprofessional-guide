@@ -1,0 +1,6 @@
+
+# Direction where "gitbook" outputs by default.
+_book
+
+# Direction where NPM modules locate.
+node_modules
