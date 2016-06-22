@@ -1,17 +1,29 @@
 #	{{ book.PACKER }} 的命令调用
 
+##	快速入门
+
+{{ book.PACKER }} [安装](moles-packer.install.md)完成后，将创建两个命令：
+*	```moles-pack```  
+	用于项目构建，可编译业务代码并将其打包，也可同时创建公包。
+	
+*	```moles-pack-common```  
+	仅用于创建公包及相应的元数据文件。
+
 ```bash
 # 打印帮助信息。
-moles-packer --help
+moles-pack --help
 
 # 在当前目录下执行构建。
-moles-packer
+moles-pack
 
 # 针对指定目录执行构建，并将结果输出到指定文件。
-moles-packer --input ./foo/bar/ --entry index.ios.js --output ./output
+moles-pack --input ./foo/bar/ --entry index.ios.js --output ./output
+
+# 仅创建公包。
+moles-pack-common
 ```
 
-我们可以通过命令行参数指挥 ```moles-packer``` 完成简单的、目标明确的构建任务，也可以在项目中添加 ```.molesrc``` 配置文件，定义更加复杂的构建任务，请参考“[构建配置](moles-packer.spec.md)”一节。
+我们可以通过命令行参数指挥 {{ book.PACKER }} 完成简单的、目标明确的构建任务，也可以在项目中添加 ```.molesrc``` 配置文件，定义更加复杂的构建任务，请参考“[构建配置](moles-packer.spec.md)”一节。
 
 配置文件中的配置项与命令行参数出现冲突时， __命令行参数的优先级高于配置文件。__
 
@@ -30,12 +42,14 @@ moles-packer --bundle
 *	__--bundle__ [&lt;*bundle.js*&gt;]  
 	__缺省值__：```false```（即不执行代码合并）  
 	__选项值缺省__：```index.jsbundle```  
+	
 	将构建结果合并输出至一个文件，该文件将被保存在 ```--output``` 指定的目录中，文件名可以缺省。  
 	bundle 文件中默认不包含公包模块，除非使用了 ```--standalone``` 选项。
 
 *	__--common__ &lt;*path/to/existing/common/jsbundle*&gt;  
 	__缺省值__：```false```  
 	__选项值缺省__：无  
+	
 	使用预生成的公包文件。__如果选项值是相对路径__，{{ book.PACKER }} 会 __按以下优先级__ 检索预生成文件：  
 	　　__优先__：```PATH.JOIN(--input, --common)```  
 	　　__其次__：```PATH.JOIN(CWD, --common)```  
@@ -58,10 +72,11 @@ moles-packer --bundle
 *	__--common-meta__ &lt;*path/to/existing/common/modules/json*&gt;  
 	__缺省值__：```false```  
 	__选项值缺省__：无，或根据 ```--common``` 选项值生成  
+	
 	使用预生成的公包元数据。如果指定了 ```--common``` 却未指定 ```--common-meta```，那么 {{ book.PACKER }} 会在前者指定文件所在目录下，检索同名且后缀为 *.meta.json* 的元数据文件。  
 	该选项与 ```--common-bundle``` 选项不兼容。
 
-*	__--dev__
+*	__--dev__  
 	保持输出代码的可读性，不对其进行压缩和混淆。
 
 *	__--entry__ &lt;*entry/file/basename*&gt;  
@@ -92,4 +107,5 @@ moles-packer --bundle
 	注意：如果该目录不存在，{{ book.PACKER }} 会自动创建。 __如果该目录已经存在，其中的文件有可能被覆盖。__
 
 *	__--standalone__  
-	是否输出可独立运行的 bundle 文件。该选项必须配合 ```--bundle``` 选项使用，否则将被忽略。
+	是否输出可独立运行的 bundle 文件。  
+	该选项必须配合 ```--bundle``` 选项使用，否则将被忽略。
