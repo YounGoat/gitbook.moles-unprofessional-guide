@@ -1,5 +1,8 @@
 {
 	"title": "Moles Unprofessional Guide",
+	"variables": {
+		"PACKER": "Moles Packer"
+	},
 	"links": {
 		"about": false,
 		"issues": false,
