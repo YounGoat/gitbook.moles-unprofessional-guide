@@ -13,14 +13,56 @@
 # 打印帮助信息。
 moles-pack --help
 
-# 在当前目录下执行构建。
-moles-pack
+# 显示版本。
+moles-pack --version
+```
 
-# 针对指定目录执行构建，并将结果输出到指定文件。
-moles-pack --input ./foo/bar/ --entry index.ios.js --output ./output
+我们先来完成一些准备工作：
+```bash
+# 创建一个 React Native 项目，如果已有项目，也可以跳过此步骤。
+react-native init rn26
 
-# 仅创建公包。
-moles-pack-common
+# 复制一个 React Native 项目并进行删减。
+cp -R rn26 rn26-lite
+rm -fr rn26-lite/android
+rm -fr rn26-lite/ios
+rm -fr rn26-lite/node_modules 
+# 如果是已有项目，请保留开发过程中自行安装的模块。
+```
+
+通过以下命令，你可以大致了解 {{ book.PACKER }} 的功能和使用方法：
+```bash
+# 针对 ./rn26 项目执行拆分和打包。
+# 指定入口文件为 index.ios.js (即针对 iOS 版本)。
+moles-pack \
+	--input ./rn26 \
+	--entry index.ios.js \
+	--output ./build \
+	--bundle
+
+# 利用原生的 React Native 项目，生成公包及元数据文件。
+moles-pack-common \
+	--input ./rn26 \
+	--output ./build \
+	--common-bundle
+# 完成后应在 ./build 目录下创建以下文件：
+# 　　 ./build/common.jsbundle
+# 　　 ./build/common.meta.json
+
+# 利用已创建的公包，针对精减版项目执行拆分和打包。
+moles-pack \
+	--input ./rn26-lite \
+	--common ./build/common.jsbundle \
+	--entry index.ios.js 
+	--output ./build2 \
+	--bundle
+
+# 不拆分公包，输出可独立执行的业务包文件。
+moles-pack \
+	--input ./rn26 \
+	--entry index.ios.js \
+	--output ./build \
+	--standalone
 ```
 
 我们可以通过命令行参数指挥 {{ book.PACKER }} 完成简单的、目标明确的构建任务，也可以在项目中添加 ```.molesrc``` 配置文件，定义更加复杂的构建任务，请参考“[构建配置](moles-packer.spec.md)”一节。
@@ -108,4 +150,8 @@ moles-packer --bundle
 
 *	__--standalone__  
 	是否输出可独立运行的 bundle 文件。  
-	该选项必须配合 ```--bundle``` 选项使用，否则将被忽略。
+	该选项应与 ```--bundle``` 选项配合使用，如果未指定 ```--bundle```，则使用其选项缺省值，即输出 bundle 文件至以下路径：
+	```
+	// 伪代码
+	PATH.JOIN(--outut, 'index.jsbundle')
+	```
