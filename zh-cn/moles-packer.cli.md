@@ -117,6 +117,11 @@ moles-packer --bundle
 	
 	使用预生成的公包元数据。如果指定了 ```--common``` 却未指定 ```--common-meta```，那么 {{ book.PACKER }} 会在前者指定文件所在目录下，检索同名且后缀为 *.meta.json* 的元数据文件。  
 	该选项与 ```--common-bundle``` 选项不兼容。
+	
+*	__--common-modules__ &lt;*module,names,seperated,by,comma*&gt;  
+	__缺省值__: ```react,react-native```
+	
+	指定公包中所包含的模块，多个模块之间使用逗号分隔。被指定的模块及其依赖模块都将被纳入公包的范围，同时也被排除业务包之外。react 和 react-native 及其依赖模块、附属模块默认包含在公包内，且不能排除，因此自定义公包模块时，无须添加这两个模块。
 
 *	__--dev__  
 	保持输出代码的可读性，不对其进行压缩和混淆。
