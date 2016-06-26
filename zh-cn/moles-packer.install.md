@@ -1,4 +1,7 @@
-#	Moles Packer 的安装
+#   {{ book.PACKER }} 的安装
+*   拟适用版本：>=0.1.9
+
+---
 
 ```bash
 # 全局安装

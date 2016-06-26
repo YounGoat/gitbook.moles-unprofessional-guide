@@ -1,10 +1,13 @@
-#	Moles Packer 的构建配置
+#	{{ book.PACKER }} 的构建配置
+*   拟适用版本：>=2.0.0
 
-除了通过命令行参数控制 Moles Packer 之外，还可以通过在 __项目根目录__ 中添加 .molesrc 配置文件约束其行为，我们称之为“构建配置”。命令行参数是一次性的，而 .molesrc 是项目的一部分。
+---
+
+除了通过命令行参数控制 {{ book.PACKER }} 之外，还可以通过在 __项目根目录__ 中添加 .molesrc 配置文件约束其行为，我们称之为“构建配置”。命令行参数是一次性的，而 .molesrc 是项目的一部分。
 
 ##	构建配置的基本格式
 
-基于可移植性和控制学习成本的考虑，Moles Packer 选择 JSON 作为构建配置文件的基本格式，并借鉴了 RequireJS 配置选项[^1]的若干理念。一个典型的构建配置文件大约是这样的：[^2]
+基于可移植性和控制学习成本的考虑，{{ book.PACKER }} 选择 JSON 作为构建配置文件的基本格式，并借鉴了 RequireJS 配置选项[^1]的若干理念。一个典型的构建配置文件大约是这样的：[^2]
 ```js
 {
 	// 配置格式版本
@@ -34,7 +37,10 @@
 	},
 
 	// 公包信息
-	"common" : {
+	"commonBundle" : {
+        // 指定公包的平台类型。
+        "platform" : "ios",
+
 		// 指定公包的输出文件名，默认为 common.js
 		// 如果不希望输出公包，则将该值设为 false
 		"output" : "common.js",
@@ -140,16 +146,17 @@
 	}
 	```
 
-##	配置项：common
+##	配置项：commonBundle
 *	格式版本：1.0+
-*	数据类型：布尔值 / 字符串 / 对象
+*	数据类型：枚举字符串 / 对象
 *	缺省配置：```false```
 
-指定与公包有关的信息。
-*	输出公包至默认位置，公包中仅包含默认模块：  
+指定与公包有关的信息。```commonBundle``` 有多个子选项，其中 ```platform``` 是必选项。如果 ```commonBundle``` 选项值为字符串，则该值等同于 ```commonBundle.platform```。
+
+*	指定公包的平台类型，输出公包至默认位置，公包中仅包含默认模块：  
 	```javascript
 	{
-		"common" : true,
+		"common" : "ios",
 		// ...
 	}
 	```
@@ -158,7 +165,10 @@
 *	输出公包至指定文件：
 	```javascript
 	{
-		"common" : "common.bundle.js",
+		"common" : {
+            "platform" : "ios",
+            "output"   : "common.bundle.js"
+        }
 		// ...
 	}
 	```
@@ -167,8 +177,9 @@
 	```javascript
 	{
 		"common" : {
-			"include" : [ /* names of modules to be included */ ],
-			"exclude" : [ /* names of modules to be excluded */ ]
+            "platform" : "ios",
+			"include"  : [ /* names of modules to be included */ ],
+			"exclude"  : [ /* names of modules to be excluded */ ]
 		}
 	}
 	```

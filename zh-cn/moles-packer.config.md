@@ -1,1 +1,1 @@
-#	Moles Packer 的用户配置
+#	{{ book.PACKER }} 的用户配置
