@@ -8,6 +8,7 @@
 ```javascript
 var mp = require('moles-packer');
 
+// 选项参数与命令行参数兼容。
 var options = {
 	'input'         : './rn26',
 	'entry'         : 'index.ios.js',
@@ -22,7 +23,7 @@ var callback = function(err) {
 };
 
 // 同时支持回调函数和 Promise。
-var promise = mp(options, callback);
+var promise = mp.pack(options, callback);
 
 promise
     .then(function() { /* 构建成功 */ })
@@ -30,4 +31,4 @@ promise
     ;
 ```
 
-API 的方法参数与命令行参数兼容。
+API 的方法参数与命令行参数兼容，请参考“[命令调用之参数详解](moles-packer.cli.md#options)”一节。
