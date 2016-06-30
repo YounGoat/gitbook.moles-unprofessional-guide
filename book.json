@@ -17,5 +17,16 @@
         }
     },
     "version": "2.6.6",
-    "plugins": []
+    "plugins": [
+        "disqus",
+        "ga"
+    ],
+    "pluginsConfig": {
+        "disqus": {
+            "shortName": "moles-guide"
+        },
+        "ga": {
+            "token": "UA-80152063-1"
+        }
+    }
 }
