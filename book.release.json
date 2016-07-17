@@ -21,6 +21,15 @@
         "moles-packer.cli-0.1.9.md"
     ],
     "plugins": [
-        "catalog"
-    ]
+        "disqus",
+        "ga"
+    ],
+    "pluginsConfig": {
+        "disqus": {
+            "shortName": "moles-guide"
+        },
+        "ga": {
+            "token": "UA-80152063-1"
+        }
+    }
 }

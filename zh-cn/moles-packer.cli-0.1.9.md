@@ -1,7 +1,5 @@
 #   {{ book.PACKER }} 的命令调用
-*   拟适用版本：>=0.3.0
-
-自 0.3.0 版本起，参数有较大幅度的调整，如欲了解 0.2.1 及之前版本的参数，请查阅“[命令调用的早期格式](moles-packer.cli-0.1.9.md)”一节。
+*   适用版本：>=0.1.9
 
 ---
 
@@ -58,7 +56,7 @@ moles-pack-common \
 # 利用已创建的公包，针对精减版项目执行拆分和打包。
 moles-pack \
     --input ./rn26-lite \
-    --common ./build/common \
+    --common ./build/common.jsbundle \
     --entry index.ios.js
     --output ./build2 \
     --bundle
@@ -89,56 +87,50 @@ moles-packer --bundle
 没有值的选项是开关量，缺省代表关闭，附加该参数则代表打开。
 
 *   __--bundle__ [&lt;*bundle.js*&gt;]  
+    __缺省值__：```false```（即不执行代码合并）  
+    __选项值缺省__：```index.jsbundle```  
 
-    指示将构建结果合并输出，该文件将被保存在 ```--output``` 指定的目录中：
-    ```bash
-    OUTPUT/index.ios.jsbundle       # 适用于 iOS 平台的业务包或可独立运行的程序包
-    OUTPUT/index.android.jsbundle   # 适用于 Android 平台的业务包或或独立运行的程序包
-    OUTPUT/index.jsbundle           # 跨平台的业务包
-    ```
-    注意：{{ book.PACKER }} 构建的可独立运行的程序包，必须是平台相关的，故其文件名中也包括平台名称。有关平台兼容性的设计，请参考“[构建输出的兼容性](moles-packer.bundle.compatibility.md)”一节。  
+    将构建结果合并输出至一个文件，该文件将被保存在 ```--output``` 指定的目录中，文件名可以缺省。  
     bundle 文件中默认不包含公包模块，除非使用了 ```--standalone``` 选项。
 
-*   __--common-input__ &lt;*path/to/existing/common/dir*&gt;  
+*   __--common__ &lt;*path/to/existing/common/jsbundle*&gt;  
     __缺省值__：```false```  
-    __选项值缺省__：```moles.common```  
+    __选项值缺省__：无  
 
-    指定公包目录，并在构建过程中使用该目录中的预制公包及其元数据文件。__如果选项值是相对路径__，{{ book.PACKER }} 会 __按以下优先级__ 检索：  
-    　　__优先__：```PATH.JOIN(--input, --common-input)```  
-    　　__其次__：```PATH.JOIN(CWD, --common-input)```  
+    使用预生成的公包文件。__如果选项值是相对路径__，{{ book.PACKER }} 会 __按以下优先级__ 检索预生成文件：  
+    　　__优先__：```PATH.JOIN(--input, --common)```  
+    　　__其次__：```PATH.JOIN(CWD, --common)```  
+    该选项应当与 ```--common-meta``` 选项配合使用。
 
-    公包目录中应当存在以下文件组合之一：  
+*   __--common-bundle__ [&lt;*common.jsbundle*&gt;]  
+    __缺省值__：```false```（即不创建公包文件）  
+    __选项值缺省__：```common.jsbundle```  
+
+    将属于公包的模块合并输出至一个文件，该文件将被保存在 ```--output``` 指定的目录中，文件名可以缺省。 {{ book.PACKER }} 在生成公包的同时，会在同一目录下生成一个与公包文件同名、后缀为 *.meta.json* 的元数据文件。  
+    该选项必须与 ```--platform``` 选项配合使用。
+
     ```bash
-    # 组合一：跨平台公包
-    [ common.ios.jsbundle     ] # iOS 平台公包文件  
-    [ common.android.jsbundle ] # Android 平台公包文件  
-      common.json               # 跨平台公包元数据文件  
-
-    # 组合二：iOS 平台专用公包
-    [ common.ios.jsbundle     ] # iOS 平台公包文件   
-      common.ios.json           # iOS 平台公包元数据文件
-
-    # 组合三：Android 平台专用公包
-    [ common.android.jsbundle ] # Android 平台公包文件  
-      common.android.json       # Android 平台公包元数据文件
+    moles-packer --common-bundle common/index.js
+    # 除了业务文件以外，将生成以下公包文件和元数据文件：
+    # 　　./build/common/index.js
+    # 　　./build/common/index.meta.json
     ```
-    公包目录中的文件组合应当与 ```--platform``` 指定的平台匹配。如果不需要创建可独立运行的程序包（未开启 ```--standalone```），可以省略 ```.jsbundle``` 文件。
+    未添加该选项时，构建结果中不包含独立的公包文件。
 
-    __公包目录应由 {{ book.PACKER }} 创建，强烈建议不要对其进行修改。__
+*   __--common-meta__ &lt;*path/to/existing/common/modules/json*&gt;  
+    __缺省值__：```false```  
+    __选项值缺省__：无，或根据 ```--common``` 选项值生成  
+
+    使用预生成的公包元数据。如果指定了 ```--common``` 却未指定 ```--common-meta```，那么 {{ book.PACKER }} 会在前者指定文件所在目录下，检索同名且后缀为 *.meta.json* 的元数据文件。  
+    该选项与 ```--common-bundle``` 选项不兼容。
 
 *   __--common-modules__ &lt;*module,names,seperated,by,comma*&gt;  
     __缺省值__: ```react,react-native```
 
     指定公包中所包含的模块，多个模块之间使用逗号分隔。被指定的模块及其依赖模块都将被纳入公包的范围，同时也被排除业务包之外。react 和 react-native 及其依赖模块、附属模块默认包含在公包内，且不能排除，因此自定义公包模块时，无须添加这两个模块。
 
-*   __--common-output__ &lt;*path/to/export/common/bundle/and/meta*&gt;  
-    __缺省值__：```moles.common```  
-
-    指定公包输出目录。  
-    当选项值是相对路径时，如果以 ```.``` 或 ```..``` 起始，则相对于当前工作目录；否则认为相对于 ```--output``` 选项所指定的输出目录。
-
 *   __--dev__  
-    开发模式下构建的代码，在运行时可以输出更多的调试信息。
+    保持输出代码的可读性，不对其进行压缩和混淆。
 
 *   __--entry__ &lt;*entry/file/basename*&gt;  
     __缺省值__：```index.js```  
@@ -161,31 +153,24 @@ moles-packer --bundle
 
     指定项目目录。  
 
-*   __--minify__  
-    默认情形下，{{ book.PACKER }} 将保持输出代码的可读性，不对其进行压缩和混淆。如需获得更小尺寸的构建结果，请打开 ```--minify``` 开关。
-
 *   __--output__ &lt;*path/to/output/dir*&gt;  
     __缺省值__：```./build```（当前目录的 build 子目录）  
 
     指定输出目录。  
     注意：如果该目录不存在，{{ book.PACKER }} 会自动创建。 __如果该目录已经存在，其中的文件有可能被覆盖。__
 
-*   __--platform__ *ios* | *android* | *cross*  
-    __缺省值__: ```cross```
+*   __--platform__ *ios* | *android*  
+    __缺省值__: 无
 
     指定构建输出结果适用的操作系统平台。  
-    如果打包结果需要跨平台通用，开发人员须确保业务代码中没有引用平台相关的模块，否则请分别执行命令，以获取平台相关的业务包。
+    {{ book.PACKER }} 的输出结果中，只有公包是平台相关的[^1]，因此该选项实际上只有与 ```--common-bundle``` 选项配合使用时才有意义。
 
 *   __--standalone__  
     是否输出可独立运行的 bundle 文件。  
-    该选项应与 ```--bundle``` 和 ```--platform``` 选项配合使用，如果未指定 ```--bundle```，则使用其选项缺省值，即输出 bundle 文件至以下路径：
+    该选项应与 ```--bundle``` 选项配合使用，如果未指定 ```--bundle```，则使用其选项缺省值，即输出 bundle 文件至以下路径：
     ```
     // 伪代码
     PATH.JOIN(--outut, 'index.jsbundle')
     ```
-
-##  与早期格式的差异
-
-与 v0.2.0 相比，v0.3.0 的设计思路有所调整，对构建结果的跨平台兼容性予以了更多的关注，这种调整也体现在命令参数的增删之中。
 
 [^1]: 参见“[构建输出的兼容性](moles-packer.bundle.compatibility.md)”一节。
