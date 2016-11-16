@@ -1,6 +1,8 @@
 #   {{ book.PACKER }} 的命令调用
 *   适用版本：>=0.1.9
 
+使用较新版本的用户，请参阅“[命令调用](moles-packer.cli.md)”一节以获取匹配的信息。
+
 ---
 
 ##    快速入门
@@ -167,7 +169,7 @@ moles-packer --bundle
 
 *   __--standalone__  
     是否输出可独立运行的 bundle 文件。  
-    该选项应与 ```--bundle``` 选项配合使用，如果未指定 ```--bundle```，则使用其选项缺省值，即输出 bundle 文件至以下路径：
+    该选项应与 ```--bundle``` 选项配合使用，如果未指定 ```--bundle```，则默认输出 bundle 文件至以下路径：
     ```
     // 伪代码
     PATH.JOIN(--outut, 'index.jsbundle')

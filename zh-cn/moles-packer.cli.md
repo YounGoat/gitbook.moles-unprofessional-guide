@@ -1,25 +1,27 @@
 #   {{ book.PACKER }} 的命令调用
-*   拟适用版本：>=0.3.0
+*   适用版本：>=0.3.0
 
 自 0.3.0 版本起，参数有较大幅度的调整，如欲了解 0.2.1 及之前版本的参数，请查阅“[命令调用的早期格式](moles-packer.cli-0.1.9.md)”一节。
 
 ---
 
-##    快速入门
+##	快速入门
 
 {{ book.PACKER }} [安装](moles-packer.install.md)完成后，将创建两个命令：
-*   ```moles-pack```  
+*   ```moles-packer```  
     用于项目构建，可编译业务代码并将其打包，也可同时创建公包。
 
-*   ```moles-pack-common```  
+*   ```moles-packer-common```  
     仅用于创建公包及相应的元数据文件。
+
+__注意__：v0.4.0 之前的版本中，一度曾使用命令名 ```moles-pack``` 和 ```moles-pack-common```。这种命令思路以动词替代命令名中的名词，固然有其合理性，但是违背了命令名与包名尽可能一致的惯例，极易引起混淆，对于使用者不友好，故后来的版本中又恢复了原先的名称。为了向上兼容，0.4.0 及稍后的几个版本仍保留了 ```moles-pack``` 和 ```moles-pack-common``` 作为正式命令的别名。
 
 ```bash
 # 打印帮助信息。
-moles-pack --help
+moles-packer --help
 
 # 显示版本。
-moles-pack --version
+moles-packer --version
 ```
 
 我们先来完成一些准备工作：
@@ -50,10 +52,9 @@ moles-pack-common \
     --input ./rn26 \
     --output ./build \
     --platform ios \
-    --common-bundle
 # 完成后应在 ./build 目录下创建以下文件：
-# 　　 ./build/common.jsbundle
-# 　　 ./build/common.meta.json
+# 　　 ./build/moles.common/common.ios.jsbundle
+# 　　 ./build/moles.common/common.ios.json
 
 # 利用已创建的公包，针对精减版项目执行拆分和打包。
 moles-pack \
@@ -178,11 +179,7 @@ moles-packer --bundle
 
 *   __--standalone__  
     是否输出可独立运行的 bundle 文件。  
-    该选项应与 ```--bundle``` 和 ```--platform``` 选项配合使用，如果未指定 ```--bundle```，则使用其选项缺省值，即输出 bundle 文件至以下路径：
-    ```
-    // 伪代码
-    PATH.JOIN(--outut, 'index.jsbundle')
-    ```
+    该选项应与 ```--bundle``` 和 ```--platform``` 选项配合使用。
 
 ##  与早期格式的差异
 

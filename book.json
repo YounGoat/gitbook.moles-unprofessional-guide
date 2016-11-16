@@ -1,26 +1,26 @@
 {
-    "title": "Moles Unprofessional Guide",
-    "variables": {
-        "MOLES": "Moles",
-        "WEB": "Moles Webridge",
-        "PACKER": "Moles Packer"
-    },
-    "links": {
-        "about": false,
-        "issues": false,
-        "contribute": false,
+	"title": "Moles Unprofessional Guide",
+	"variables": {
+		"MOLES": "Moles",
+		"WEB": "Moles Webridge",
+		"PACKER": "Moles Packer"
+	},
+	"links": {
+		"about": false,
+		"issues": false,
+		"contribute": false,
 
-        "sharing": {
-            "all": false,
-            "facebook": false,
-            "twitter": false
-        }
-    },
-    "version": "2.6.6",
-    "ignores": [
-        "moles-packer.cli-0.1.9.md"
-    ],
-    "plugins": [
-        "catalog"
-    ]
+		"sharing": {
+			"all": false,
+			"facebook": false,
+			"twitter": false
+		}
+	},
+	"version": "2.6.6",
+	"ignores": [
+		"moles-packer.cli-0.1.9.md"
+	],
+	"plugins": [
+		"catalog"
+	]
 }
